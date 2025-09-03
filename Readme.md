@@ -167,22 +167,6 @@ import { syncTrades } from './dist/src/services/SyncService';
 
 ---
 
-## 🧱 Architecture Diagram (Mermaid)
-
-```mermaid
-flowchart LR
-  A[Caller: syncTrades(userId, broker)] --> B[getAdapter(broker)]
-  B --> C{Adapter}
-  A --> D[getValidToken(userId, broker, adapter)]
-  D -->|expired/missing| E[adapter.refreshToken]
-  D -->|valid| F[adapter.fetchTrades]
-  E --> F
-  F --> G[Normalizer (per broker)]
-  G --> H[Trade[]]
-```
-
----
-
 ## (Optional) API Notes
 
 The Express server exposes a single endpoint `POST /sync`. See "Run the HTTP Server (Express)" above for curl examples.
