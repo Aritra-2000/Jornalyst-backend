@@ -1,0 +1,35 @@
+{
+  "name": "jounalyst-project",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p .",
+    "start": "npm run build && node dist/index.js",
+    "demo": "npm run start",
+    "dev": "nodemon --exec ts-node index.ts",
+    "dev:api": "nodemon --exec ts-node src/app.ts",
+    "dev:cli": "nodemon --exec ts-node run.ts",
+    "start:api": "npm run build && node dist/src/app.js",
+    "dev:server": "nodemon --exec ts-node src/server.ts",
+    "start:server": "npm run build && node dist/server.js",
+    "serve": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
