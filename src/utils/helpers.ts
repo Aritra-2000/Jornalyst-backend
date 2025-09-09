@@ -15,7 +15,7 @@ export interface NormalizedTrade {
   symbol: string;
   quantity: number;
   price: number;
-  timestamp: string; // ISO
+  timestamp: string; 
   side: Side;
 }
 
@@ -31,10 +31,10 @@ export function normalizeFromZerodha(raw: RawZerodhaTrade): NormalizedTrade {
 
 export interface RawMetaTraderTrade {
   symbol: string;
-  volume: number | string;     // lot size or units
+  volume: number | string;     
   price: number | string;
-  time: string | number | Date; // open/close time depending on feed
-  type: string;                 // 'buy' | 'sell' or similar
+  time: string | number | Date; 
+  type: string;                 
 }
 
 export function normalizeFromMetaTrader(raw: RawMetaTraderTrade): NormalizedTrade {

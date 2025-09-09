@@ -1,7 +1,6 @@
 import { nowMs } from '../utils/helpers';
 import type { IBrokerAdapter, Token } from '../adapters/IBrokerAdapter';
 
-// In-memory token store
 const store: Record<string, Record<string, Token>> = Object.create(null);
 
 export function get(userId: string, broker: string): Token | null {

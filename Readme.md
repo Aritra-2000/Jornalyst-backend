@@ -23,7 +23,7 @@ The project implements a simplified **Broker Integration Layer** that can fetch 
   - `getName()`
   - `fetchTrades(token)`
   - `refreshToken(oldToken)`
-- Implemented one adapter: `MetaTraderAdapter` (simulated API calls for demo).
+- Implemented adapters: `MetaTraderAdapter` and `ZerodhaAdapter` (real API ready).
 
 ### 2. **Trade Data Normalization**
 - Different brokers return trades in different formats.  
@@ -47,7 +47,7 @@ The project implements a simplified **Broker Integration Layer** that can fetch 
 /src
   /adapters
     IBrokerAdapter.ts       # Abstract base
-    MetaTraderAdapter.ts    # Simulated MetaTrader adapter
+    MetaTraderAdapter.ts    # MetaTrader adapter (real API)
     index.ts                # Adapter registry
   /services
     TokenService.ts         # In-memory token management
@@ -61,27 +61,6 @@ tsconfig.json               # TypeScript config
 ```
 
 ---
-
-## ▶️ Run the Demo (CLI)
-
-Prereqs: Node 18+.
-
-1) Install
-```
-npm i
-```
-
-2) Build and run
-```
-npm run build && node dist/run.js
-```
-
-Dev (no build):
-```
-npm run dev:cli
-```
-
-This executes `syncTrades('demo-user-1', 'zerodha')` (see `run.ts`) and prints normalized trades.
 
 ---
 
@@ -137,6 +116,64 @@ import { syncTrades } from './dist/src/services/SyncService';
 
 ---
 
+## Environment Variables
+
+Create a `.env` file in your project root with the following variables:
+
+```bash
+# Broker Integration Configuration
+
+# Global Settings
+NODE_ENV=development
+PORT=3000
+
+# MetaTrader Configuration
+METATRADER_BASE_URL=https://api.metatrader.com
+METATRADER_CLIENT_ID=your_metatrader_client_id
+METATRADER_CLIENT_SECRET=your_metatrader_client_secret
+
+# Zerodha (Kite Connect) Configuration
+ZERODHA_BASE_URL=https://api.kite.trade
+ZERODHA_API_KEY=your_zerodha_api_key
+ZERODHA_API_SECRET=your_zerodha_api_secret
+
+# Logging Configuration
+LOG_LEVEL=info
+LOG_API_CALLS=true
+
+# Rate Limiting (requests per minute)
+RATE_LIMIT_PER_MINUTE=60
+
+# Token Management
+TOKEN_REFRESH_SKEW_MS=30000
+```
+
+## Broker-Specific Configuration
+
+### MetaTrader
+- **Base URL**: The MetaTrader API endpoint
+- **Client ID**: Your MetaTrader application client ID
+- **Client Secret**: Your MetaTrader application client secret
+
+### Zerodha (Kite Connect)
+- **Base URL**: Kite Connect API endpoint (usually https://api.kite.trade)
+- **API Key**: Your Kite Connect API key
+- **API Secret**: Your Kite Connect API secret
+
+## Security Notes
+
+1. **Never commit your `.env` file** to version control
+2. **Use environment-specific configurations** for different deployments
+3. **Rotate API keys regularly** for security
+4. **Use HTTPS** for all API communications
+5. **Implement proper error handling** for API failures
+
+## Testing
+
+Use sandbox credentials or a staging environment from your broker when testing.
+
+---
+
 ## 🧠 Design Decisions
 
 - **Abstract adapter class** (`IBrokerAdapter`) gives a clear contract and allows common orchestration in services.
@@ -160,10 +197,49 @@ import { syncTrades } from './dist/src/services/SyncService';
 
 ## ✅ Assumptions & Simplifications
 
-- Network requests are simulated for demo (no external credentials required).
-- Tokens are stored in-memory and refreshed with a simulated flow.
-- Two brokers are enabled in the registry: `metatrader` and `zerodha`.
-- Error handling is minimal but pragmatic; real implementation should map broker/API errors.
+- Real broker APIs are used (no mock mode).
+- In-memory token storage (swap with DB/Redis in production).
+- Two brokers supported: `metatrader` and `zerodha`.
+- Robust error handling, logging, and configuration.
+
+---
+
+## 🌐 Real API Integration
+
+The system is **production-ready** for real broker API integration:
+
+### 🔧 Quick Setup for Real APIs
+
+1. **Configure Broker Credentials**:
+```bash
+# MetaTrader
+METATRADER_CLIENT_ID=your_client_id
+METATRADER_CLIENT_SECRET=your_client_secret
+
+# Zerodha
+ZERODHA_API_KEY=your_api_key
+ZERODHA_API_SECRET=your_api_secret
+```
+
+2. **Run with Real APIs**:
+```bash
+npm run dev:api
+```
+
+### 🚀 Features for Real APIs
+
+- ✅ **HTTP Client**: Axios-based HTTP client with retry logic
+- ✅ **Error Handling**: Comprehensive error handling for API failures
+- ✅ **Token Management**: Automatic token refresh with expiry handling
+- ✅ **Rate Limiting**: Built-in rate limiting and retry mechanisms
+- ✅ **Logging**: Detailed API call logging and debugging
+- ✅ **Configuration**: Environment-based configuration system
+- ✅ **Security**: HTTPS-only communication with credential management
+
+### 📚 Documentation
+
+- **[API Integration Guide](./API_INTEGRATION_GUIDE.md)**: Complete guide for real API setup
+- **[Configuration Guide](./src/config/README.md)**: Environment and broker configuration
 
 ---
 
