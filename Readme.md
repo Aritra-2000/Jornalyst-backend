@@ -62,6 +62,30 @@ tsconfig.json               # TypeScript config
 
 ---
 
+## 🔄 Workflow
+
+1. **API Request**
+   ```
+   POST /sync
+   {
+     "userId": "user123",
+     "broker": "metatrader"
+   }
+   ```
+
+2. **Request Flow**
+   - Request received by Express Router
+   - Validated by Trade Controller
+   - Processed by Sync Service
+   - Broker-specific adapter handles API calls
+   - Data normalized to standard format
+   - Response returned to client
+
+3. **Token Management**
+   - Automatic token refresh when expired
+   - In-memory token storage
+   - Handles authentication errors gracefully
+
 ---
 
 ## 🌐 Run the HTTP Server (Express)
@@ -70,12 +94,12 @@ Install deps (first time): see Installation section below.
 
 Dev server:
 ```
-npm run dev:api
+npm run dev
 ```
 
 Prod server:
 ```
-npm run start:api
+npm start
 ```
 
 Default port: 3000. Change via `PORT` env.
@@ -243,19 +267,16 @@ npm run dev:api
 
 ---
 
-## (Optional) API Notes
+## 🧱 Architecture Diagram (Mermaid)
 
-The Express server exposes a single endpoint `POST /sync`. See "Run the HTTP Server (Express)" above for curl examples.
-
----
-
-## (Optional) Walkthrough Video
-
-Link: <your-video-link-here>
-
----
-
-## Submission
-
-- Source code ready for a GitHub repo.
-- This README includes design decisions, how to add a broker, assumptions, architecture diagram, and run instructions.
+```mermaid
+flowchart LR
+  A[Caller: syncTrades(userId, broker)] --> B[getAdapter(broker)]
+  B --> C{Adapter}
+  A --> D[getValidToken(userId, broker, adapter)]
+  D -->|expired/missing| E[adapter.refreshToken]
+  D -->|valid| F[adapter.fetchTrades]
+  E --> F
+  F --> G[Normalizer (per broker)]
+  G --> H[Trade[]]
+```
